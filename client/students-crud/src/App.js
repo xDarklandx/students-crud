@@ -6,6 +6,7 @@ import Navbar from './navbar/Navbar';
 import StudentAdd from './studentAdd/StudentAdd';
 import StudentsList from './studentsList/StudentsList';
 import StudentEdit from './studentEdit/StudentEdit';
+import Home from './home/Home';
 
 function App() {
   return (
@@ -16,11 +17,12 @@ function App() {
         <Navbar />
 
         <Routes>
-          <Route path="/" element={<> Evenings </>} />
+          <Route path="/" element={<Home/>} />
           <Route path="/add-student" element={<StudentAdd />} />
           <Route path="/list-student" element={<StudentsList />} />
           <Route path="/edit-student" element={<StudentEdit />} />
           <Route path="/edit-student/:id" element={<StudentEdit />} />
+          <Route path="/home" element={<Home/>}/>
 
           <Route
             path="*"

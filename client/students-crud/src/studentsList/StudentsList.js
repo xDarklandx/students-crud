@@ -24,17 +24,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Link } from 'react-router-dom';
-
-const deleteStudent = id => {
-  Axios.delete(`http://localhost:3001/delete/${id}`);
-  console.log(id);
-};
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { Typography } from '@material-ui/core';
 
 const StudentsList = () => {
+
   const [open, setOpen] = React.useState(false);
   const [studentList, setStudentList] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState({});
@@ -49,11 +42,24 @@ const StudentsList = () => {
     setOpen(false);
   };
 
+  const fetchStudents = async () => {
+    const students = await Axios.get('http://localhost:3001/read');
+    console.log(students.data);
+    setStudentList(students.data);
+  }
+
+  const deleteStudent = async id => {
+    await Axios.delete(`http://localhost:3001/delete/${id}`);
+    await fetchStudents();
+    console.log(id);
+  };
+  
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
   useEffect(() => {
-    Axios.get('http://localhost:3001/read').then(Response => {
-      console.log(Response);
-      setStudentList(Response.data);
-    });
+    fetchStudents();
   }, []);
 
   return (
@@ -66,9 +72,11 @@ const StudentsList = () => {
         justifyContent="center"
         style={{ minHeight: '100vh' }}
       >
-        <h1>Students List</h1>
+        <Typography component="h1" variant="h4">
+              Students List
+            </Typography>
 
-        <TableContainer style={{ maxWidth: '800px' }} component={Paper}>
+        <TableContainer style={{ maxWidth: '800px'}} component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -109,7 +117,7 @@ const StudentsList = () => {
           </Table>
         </TableContainer>
       </Grid>
-
+      {open && 
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -117,20 +125,22 @@ const StudentsList = () => {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>Student: {selectedStudent.studentFirstName} {selectedStudent.studentLastName} </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
+            
             <div>
-              <h2> Name: {selectedStudent.studentFirstName} </h2>
-              <h2> Last Name: {selectedStudent.studentLastName} </h2>
-              <h2> Birthdate: {selectedStudent.studentBirthday} </h2>
-              <h2> Email: {selectedStudent.studentEmail}</h2>
-              <h2> Address: {selectedStudent.studentAddress} </h2>
-              <h2> Gender: {selectedStudent.studentGender} </h2>
+              <h1>Student Information</h1>
+              <h3> Name: {selectedStudent.studentFirstName} </h3>
+              <h3> Last Name: {selectedStudent.studentLastName} </h3>
+              <h3> Birthdate: {selectedStudent.studentBirthday} </h3>
+              <h3> Email: {selectedStudent.studentEmail}</h3>
+              <h3> Address: {selectedStudent.studentAddress} </h3>
+              <h3> Gender: {selectedStudent.studentGender} </h3>
             </div>
           </DialogContentText>
         </DialogContent>
       </Dialog>
+      }
     </>
   );
 };

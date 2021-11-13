@@ -72,26 +72,17 @@ app.put("/update", async (req, res) => {
   const studentAddress = req.body.studentAddress;
   const studentGender = req.body.studentGender;
 
-  // const students = new StudentsModel({
-  //     studentFirstName: studentFirstName,
-  //     studentLastName: studentLastName,
-  //     studentBirthday: studentBirthday,
-  //     studentEmail: studentEmail,
-  //     studentAddress: studentAddress,
-  //     studentGender: studentGender
-  // });
   try {
-    await StudentsModel.findById(id, (err, updatedStudent) => {
-      updatedStudent.studentFirstName = studentFirstName;
+    const updatedStudent = await StudentsModel.findById(id)
+    updatedStudent.studentFirstName = studentFirstName;
       updatedStudent.studentLastName = studentLastName;
       updatedStudent.studentBirthday = studentBirthday;
       updatedStudent.studentEmail = studentEmail;
       updatedStudent.studentAddress = studentAddress;
       updatedStudent.studentGender = studentGender;
-      updatedStudent.save();
+      await updatedStudent.save();
       res.send("updated data");
-    });
-  } catch (error) {
+  } catch (err) {
     console.log(err);
   }
 });
